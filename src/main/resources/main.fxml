@@ -22,5 +22,5 @@
     <TextField fx:id="dirField" editable="false" prefWidth="400"/>
     <Button text="..." onAction="#pickDirectory"/>
 
-    <Button text="Converter" onAction="#convert" prefWidth="200"/>
+    <Button fx:id="convertButton" text="Converter" onAction="#convert" prefWidth="200"/>
 </VBox>

@@ -12,9 +12,9 @@ class TransactionRowTest {
         TransactionRow row = TransactionRow.fromOfx(
                 LocalDate.of(2024, 3, 15), "Payee", "Memo text", -150.00);
 
-        assertEquals(-150.00, row.debito(), 0.001);
+        assertEquals(150.00, row.debito(), 0.001);
         assertEquals(0.0, row.credito(), 0.001);
-        assertEquals(-150.00, row.soma(), 0.001);
+        assertEquals(150.00, row.soma(), 0.001);
     }
 
     @Test

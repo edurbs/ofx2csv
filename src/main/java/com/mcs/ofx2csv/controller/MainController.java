@@ -129,6 +129,7 @@ public class MainController {
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.showAndWait();
+        // Use show() instead of showAndWait() to avoid blocking in tests
+        alert.show();
     }
 }

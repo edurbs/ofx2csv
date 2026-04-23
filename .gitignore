@@ -8,3 +8,13 @@ build/
 # Dolt database files (added by bd init)
 .dolt/
 *.db
+
+# IDE files
+.classpath
+.project
+.settings/
+
+# Sample data
+*.ofx
+*.OFX
+*.csv

@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -42,8 +42,9 @@ public class OfxParser {
     public List<TransactionRow> parse(Path filePath) throws IOException {
         byte[] raw = Files.readAllBytes(filePath);
         byte[] sanitized = sanitizeEmptyFitid(raw);
+        byte[] corrected = transcodeUtf8ToLatin1(sanitized);
         try {
-            return unmarshal(new ByteArrayInputStream(sanitized));
+            return unmarshal(new ByteArrayInputStream(corrected));
         } catch (OFXParseException e) {
             throw new IOException("Failed to parse OFX file: " + filePath, e);
         }
@@ -57,6 +58,21 @@ public class OfxParser {
         String content = new String(raw, StandardCharsets.ISO_8859_1);
         String sanitized = EMPTY_FITID.matcher(content).replaceAll("<FITID>NONE</FITID>");
         return sanitized.getBytes(StandardCharsets.ISO_8859_1);
+    }
+
+    /**
+     * Detects if the OFX content is actually UTF-8 and transcodes to ISO-8859-1.
+     * Brazilian banks commonly declare ENCODING:USASCII / CHARSET:1252 but
+     * encode the content in UTF-8. OFX4J uses the declared charset to decode,
+     * so we transcode UTF-8 multi-byte sequences to single-byte Latin-1 equivalents.
+     */
+    byte[] transcodeUtf8ToLatin1(byte[] ofxBytes) {
+        String asUtf8 = new String(ofxBytes, StandardCharsets.UTF_8);
+        byte[] roundTripped = asUtf8.getBytes(StandardCharsets.UTF_8);
+        if (java.util.Arrays.equals(ofxBytes, roundTripped)) {
+            return asUtf8.getBytes(StandardCharsets.ISO_8859_1);
+        }
+        return ofxBytes;
     }
 
     private List<TransactionRow> unmarshal(ByteArrayInputStream input) throws IOException, OFXParseException {
@@ -86,7 +102,7 @@ public class OfxParser {
         for (Object obj : txnList.getTransactions()) {
             Transaction t = (Transaction) obj;
             LocalDate date = t.getDatePosted().toInstant()
-                    .atZone(ZoneId.systemDefault()).toLocalDate();
+                    .atZone(ZoneOffset.UTC).toLocalDate();
             rows.add(TransactionRow.fromOfx(date, t.getName(), t.getMemo(), t.getAmount()));
         }
         return rows;

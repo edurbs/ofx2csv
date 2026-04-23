@@ -1,6 +1,8 @@
 package com.mcs.ofx2csv.service;
 
 import com.mcs.ofx2csv.model.TransactionRow;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -20,7 +22,7 @@ public class ExcelWriter {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private static final String[] HEADERS = {
-            "Data Balancete", "Historico", "DEBITO", "CREDITO", "SOMA"
+            "Data Balancete", "Historico", "CREDITO", "DEBITO", "SOMA"
     };
 
     /**
@@ -36,21 +38,35 @@ public class ExcelWriter {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Extrato");
 
+            // Currency style for CREDITO, DEBITO, SOMA columns
+            DataFormat fmt = workbook.createDataFormat();
+            CellStyle currencyStyle = workbook.createCellStyle();
+            currencyStyle.setDataFormat(fmt.getFormat("_-\"R$\" * #,##0.00_-;_-\"R$\" * (#,##0.00)_-;_-\"R$\" * \"-\"??_-;_-@_-"));
+
             // Header row
             Row headerRow = sheet.createRow(0);
             for (int i = 0; i < HEADERS.length; i++) {
                 headerRow.createCell(i).setCellValue(HEADERS[i]);
             }
 
-            // Data rows
+            // Data rows (skip zero-amount transactions)
+            List<TransactionRow> filtered = rows.stream()
+                    .filter(tr -> tr.debito() != 0 || tr.credito() != 0)
+                    .toList();
             int rowIdx = 1;
-            for (TransactionRow tr : rows) {
+            for (TransactionRow tr : filtered) {
                 Row row = sheet.createRow(rowIdx++);
                 row.createCell(0).setCellValue(tr.date().format(DATE_FORMAT));
                 row.createCell(1).setCellValue(tr.historico());
-                row.createCell(2).setCellValue(tr.debito());
-                row.createCell(3).setCellValue(tr.credito());
-                row.createCell(4).setCellValue(tr.soma());
+                var cCred = row.createCell(2);
+                cCred.setCellValue(tr.credito());
+                cCred.setCellStyle(currencyStyle);
+                var cDeb = row.createCell(3);
+                cDeb.setCellValue(tr.debito());
+                cDeb.setCellStyle(currencyStyle);
+                var cSoma = row.createCell(4);
+                cSoma.setCellValue(tr.soma());
+                cSoma.setCellStyle(currencyStyle);
             }
 
             // Auto-size columns

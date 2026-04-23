@@ -7,7 +7,7 @@ import java.time.LocalDate;
  *
  * @param date       Transaction date (DD/MM/YYYY in output)
  * @param historico  Combined NAME + MEMO from OFX
- * @param debito     Negative amount (money out), or 0
+ * @param debito     Absolute value of negative amount (money out), or 0
  * @param credito    Positive amount (money in), or 0
  * @param soma       debito + credito
  */
@@ -15,11 +15,11 @@ public record TransactionRow(LocalDate date, String historico, double debito, do
 
     /**
      * Factory method that splits the OFX transaction amount into debito/credito.
-     * Negative amounts go to debito, positive to credito. The other column is zero.
+     * Negative amounts go to debito (stored as positive), positive to credito. The other column is zero.
      */
     public static TransactionRow fromOfx(LocalDate date, String name, String memo, double amount) {
         String historico = buildHistorico(name, memo);
-        double debito = amount < 0 ? amount : 0;
+        double debito = amount < 0 ? Math.abs(amount) : 0;
         double credito = amount > 0 ? amount : 0;
         double soma = debito + credito;
         return new TransactionRow(date, historico, debito, credito, soma);
