@@ -27,6 +27,7 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml:5.3.0'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // TestFX for E2E UI testing
     testImplementation 'org.testfx:testfx-core:4.0.18'
