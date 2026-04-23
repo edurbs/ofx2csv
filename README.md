@@ -1,15 +1,15 @@
 # OFX2CSV
 
-Aplicativo desktop em JavaFX 25 para converter extratos bancarios brasileiros no formato OFX (.ofx) em planilhas Excel (.xlsx).
+Aplicativo desktop em JavaFX 25 para converter extratos bancários brasileiros no formato OFX (.ofx) em planilhas Excel (.xlsx).
 
 ## Funcionalidades
 
-- Leitura de arquivos OFX de bancos brasileiros (compativel com Banco do Brasil e outros)
-- Conversao para planilha Excel com colunas: Data Balancete, Historico, Credito, Debito, Soma
-- Formatacao monetaria (R$) nas colunas numericas
-- Filtro automatico de transacoes com valor zero (marcadores de saldo)
-- Interface grafica com selecao de arquivos e diretorio de saida
-- Suporte a conversao de multiplos arquivos ao mesmo tempo
+- Leitura de arquivos OFX de bancos brasileiros (compatível com Banco do Brasil e outros)
+- Conversão para planilha Excel com colunas: Data Balancete, Histórico, Crédito, Débito, Soma
+- Formatação monetária (R$) nas colunas numéricas
+- Filtro automático de transações com valor zero (marcadores de saldo)
+- Interface gráfica com seleção de arquivos e diretório de saída
+- Suporte a conversão de múltiplos arquivos ao mesmo tempo
 
 ## Requisitos
 
@@ -35,25 +35,25 @@ Aplicativo desktop em JavaFX 25 para converter extratos bancarios brasileiros no
 ./gradlew test
 ```
 
-## Formato de saida
+## Formato de saída
 
-| Coluna | Descricao | Formato |
+| Coluna | Descrição | Formato |
 |--------|-----------|---------|
-| Data Balancete | Data da transacao | DD/MM/AAAA |
-| Historico | Descricao combinada (nome + memo) | Texto |
-| Credito | Valor recebido | Decimal (R$) |
-| Debito | Valor gasto | Decimal (R$) |
-| Soma | Credito + Debito | Decimal (R$) |
+| Data Balancete | Data da transação | DD/MM/AAAA |
+| Histórico | Descrição combinada (nome + memo) | Texto |
+| Crédito | Valor recebido | Decimal (R$) |
+| Débito | Valor gasto | Decimal (R$) |
+| Soma | Crédito + Débito | Decimal (R$) |
 
-O arquivo de saida e salvo como `{nome_do_arquivo_original}.xlsx` no diretorio selecionado.
+O arquivo de saída é salvo como `{nome_do_arquivo_original}.xlsx` no diretório selecionado.
 
 ## Tecnologias
 
-- [JavaFX 25](https://openjfx.io/) — Interface grafica
+- [JavaFX 25](https://openjfx.io/) — Interface gráfica
 - [OFX4J](https://github.com/webcohesion/ofx4j) — Parser de arquivos OFX
-- [Apache POI](https://poi.apache.org/) — Geracao de planilhas Excel
-- [JUnit 5](https://junit.org/junit5/) + [TestFX](https://github.com/TestFX/TestFX) — Testes unitarios e de interface
+- [Apache POI](https://poi.apache.org/) — Geração de planilhas Excel
+- [JUnit 5](https://junit.org/junit5/) + [TestFX](https://github.com/TestFX/TestFX) — Testes unitários e de interface
 
-## Licenca
+## Licença
 
-Este projeto e de uso privado.
+Este projeto é de uso privado.
