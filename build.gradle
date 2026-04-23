@@ -1,0 +1,47 @@
+plugins {
+    id 'application'
+    id 'java'
+}
+
+group = 'com.mcs'
+version = '1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+application {
+    mainClass = 'com.mcs.ofx2csv.Ofx2CsvApp'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.openjfx:javafx-controls:25'
+    implementation 'org.openjfx:javafx-fxml:25'
+
+    implementation 'com.webcohesion.ofx4j:ofx4j:1.39'
+    implementation 'org.apache.poi:poi-ooxml:5.3.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+
+    // TestFX for E2E UI testing
+    testImplementation 'org.testfx:testfx-core:4.0.18'
+    testImplementation 'org.testfx:testfx-junit5:4.0.18'
+    testImplementation 'org.assertj:assertj-core:3.26.3'
+}
+
+test {
+    useJUnitPlatform()
+
+    // Required for TestFX headless UI tests
+    if (System.getenv('CI') != null || System.getProperty('java.awt.headless') != null) {
+        jvmArgs += [
+                '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+                '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
+        ]
+    }
+}
