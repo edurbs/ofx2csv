@@ -56,4 +56,4 @@ O arquivo de saída é salvo como `{nome_do_arquivo_original}.xlsx` no diretóri
 
 ## Licença
 
-Este projeto é de uso privado.
+Este projeto está licenciado sob a [GNU General Public License v3.0](LICENSE).
