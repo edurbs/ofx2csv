@@ -1,0 +1,75 @@
+name: Build Windows MSI Installer
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: '25'
+  JAVA_DISTRIBUTION: 'temurin'
+
+jobs:
+  build-msi:
+    runs-on: windows-2025
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Run tests
+        run: ./gradlew test --no-daemon
+
+      - name: Build MSI installer
+        run: ./gradlew jpackage --no-daemon
+
+      - name: List build outputs
+        run: |
+          echo "=== jpackage output ==="
+          Get-ChildItem -Recurse -Path "build\jpackage" | ForEach-Object { $_.FullName }
+
+      - name: Upload MSI artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ConversorOFX-Installer
+          path: build/jpackage/*.msi
+          retention-days: 30
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## Conversor OFX para Excel - Windows Installer
+
+            ### Instalacao
+            1. Baixe o arquivo `.msi` abaixo
+            2. De clique duplo para instalar
+            3. O instalador cria atalho no Menu Iniciar e na Area de Trabalho
+
+            ### Recursos
+            - Conversao de arquivos `.ofx` para `.xlsx`
+            - Arrastar e soltar arquivos OFX
+            - Abre automaticamente ao clicar em arquivos `.ofx`
+          draft: false
+          prerelease: false
+          files: build/jpackage/*.msi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

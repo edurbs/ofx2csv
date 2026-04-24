@@ -1,18 +1,23 @@
 plugins {
     id 'application'
     id 'java'
+    id 'org.beryx.runtime' version '2.0.1'
 }
 
 group = 'com.mcs'
-version = '1.0'
+version = '1.0.0'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 application {
     mainClass = 'com.mcs.ofx2csv.Ofx2CsvApp'
+    applicationDefaultJvmArgs = [
+        '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+        '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
+    ]
 }
 
 repositories {
@@ -20,8 +25,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.openjfx:javafx-controls:25'
-    implementation 'org.openjfx:javafx-fxml:25'
+    implementation 'org.openjfx:javafx-controls:25.0.1'
+    implementation 'org.openjfx:javafx-fxml:25.0.1'
 
     implementation 'com.webcohesion.ofx4j:ofx4j:1.39'
     implementation 'org.apache.poi:poi-ooxml:5.3.0'
@@ -42,8 +47,56 @@ test {
     // Required for TestFX headless UI tests
     if (System.getenv('CI') != null || System.getProperty('java.awt.headless') != null) {
         jvmArgs += [
-                '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
-                '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
+            '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+            '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
         ]
+    }
+}
+
+// --- jlink + jpackage configuration ---
+runtime {
+    options = ['--strip-debug', '--compress', 'zip-6', '--no-header-files', '--no-man-pages']
+    modules = [
+        'javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.fxml',
+        'java.sql', 'java.logging', 'java.xml', 'java.desktop',
+        'java.xml.crypto', 'java.security.jgss'
+    ]
+
+    launcher {
+        noConsole = true
+        jvmArgs = [
+            '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+            '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
+        ]
+    }
+
+    jpackage {
+        // Workaround: Gradle 9.x requires explicit dependency declaration
+        tasks.jpackageImage.dependsOn(tasks.runtime)
+        tasks.jpackage.dependsOn(tasks.jpackageImage)
+
+        outputDir = 'jpackage'
+        imageName = 'Conversor OFX'
+        installerName = 'ConversorOFX'
+        installerType = 'msi'
+        appVersion = project.version
+        resourceDir = project.file('src/packaging')
+
+        jvmArgs = [
+            '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+            '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
+        ]
+
+        installerOptions = [
+            '--win-menu',
+            '--win-shortcut',
+            '--win-dir-chooser',
+            '--file-associations', project.file('src/packaging/ofx-association.properties').absolutePath
+        ]
+
+        // Skip installer on non-Windows (Linux/macOS: only produce app-image)
+        if (!System.getProperty('os.name').toLowerCase().contains('win')) {
+            skipInstaller = true
+        }
     }
 }

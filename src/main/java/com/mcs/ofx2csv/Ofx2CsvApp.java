@@ -7,6 +7,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.util.List;
+
 public class Ofx2CsvApp extends Application {
 
     @Override
@@ -14,6 +17,17 @@ public class Ofx2CsvApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/main.fxml"));
         Parent root = loader.load();
         MainController controller = loader.getController();
+
+        // Handle files passed via command line (Windows file association / drag-drop)
+        List<String> args = getParameters().getRaw();
+        List<File> filesFromArgs = args.stream()
+                .map(File::new)
+                .filter(File::exists)
+                .filter(f -> f.getName().toLowerCase().endsWith(".ofx"))
+                .toList();
+        if (!filesFromArgs.isEmpty()) {
+            controller.setSelectedFiles(filesFromArgs);
+        }
 
         stage.setTitle("Conversor OFX \u2192 Excel");
         Scene scene = new Scene(root);

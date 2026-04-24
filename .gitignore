@@ -1,6 +1,12 @@
 
 build/
 .gradle/
+
+# jpackage outputs
+*.msi
+*.exe
+*.deb
+*.rpm
 *.class
 *.xlsx
 *.~lock*
