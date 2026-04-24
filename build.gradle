@@ -76,44 +76,51 @@ tasks.register('jpackageImage', Exec) {
         args '--dest', jpackageOutputDir.get().toString()
         args '--resource-dir', file('src/packaging').absolutePath
         args '--add-modules', 'javafx.controls,javafx.fxml'
-        args '--module-path', System.getProperty('java.home') + '/lib'
+        args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
 
         def jvmArgs = ['--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
                         '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED']
         args '--java-options', jvmArgs.collect { "'$it'" }.join(' ')
-    }
-
-    onlyIf {
-        file(System.getProperty('java.home') + '/bin/jpackage').exists()
     }
 }
 
 tasks.register('jpackageInstaller', Exec) {
     group = 'distribution'
     description = 'Creates a platform-specific installer using jpackage'
-    dependsOn 'jpackageImage'
+    dependsOn 'installDist'
 
     def osName = System.getProperty('os.name').toLowerCase()
     def installerType = osName.contains('win') ? 'msi' : (osName.contains('mac') ? 'dmg' : 'deb')
 
-    commandLine 'jpackage'
-    args '--type', installerType
-    args '--name', 'Conversor OFX'
-    args '--app-version', project.version
-    args '--dest', jpackageOutputDir.get().toString()
-    args '--resource-dir', file('src/packaging').absolutePath
-    args '--add-modules', 'javafx.controls,javafx.fxml'
-    args '--module-path', System.getProperty('java.home') + '/lib'
-    args '--file-associations', file('src/packaging/ofx-association.properties').absolutePath
+    doFirst {
+        def appDir = layout.buildDirectory.dir('install/ofx2csv/lib').get().asFile.toString()
+        def mainJar = fileTree(appDir).matching { include '*.jar' }.files.find { !it.name.startsWith('javafx-') && !it.name.startsWith('ofx4j-') && !it.name.startsWith('poi-') }
 
-    // Windows-specific installer options
-    if (osName.contains('win')) {
-        args '--win-menu'
-        args '--win-shortcut'
-        args '--win-dir-chooser'
-    }
+        if (mainJar == null) {
+            throw new GradleException("Cannot find main application jar in ${appDir}")
+        }
 
-    onlyIf {
-        osName.contains('win') || osName.contains('mac') || osName.contains('linux')
+        commandLine 'jpackage'
+        args '--type', installerType
+        args '--name', 'Conversor OFX'
+        args '--main-class', 'com.mcs.ofx2csv.Ofx2CsvApp'
+        args '--main-jar', mainJar.name
+        args '--input', appDir
+        args '--app-version', project.version
+        args '--dest', jpackageOutputDir.get().toString()
+        args '--resource-dir', file('src/packaging').absolutePath
+        args '--add-modules', 'javafx.controls,javafx.fxml'
+        args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
+        args '--file-associations', file('src/packaging/ofx-association.properties').absolutePath
+
+        def jvmArgs = ['--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+                        '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED']
+        args '--java-options', jvmArgs.collect { "'$it'" }.join(' ')
+
+        if (osName.contains('win')) {
+            args '--win-menu'
+            args '--win-shortcut'
+            args '--win-dir-chooser'
+        }
     }
 }
