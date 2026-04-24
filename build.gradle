@@ -1,7 +1,6 @@
 plugins {
     id 'application'
     id 'java'
-    id 'org.beryx.runtime' version '2.0.1'
 }
 
 group = 'com.mcs'
@@ -53,50 +52,63 @@ test {
     }
 }
 
-// --- jlink + jpackage configuration ---
-runtime {
-    options = ['--strip-debug', '--compress', 'zip-6', '--no-header-files', '--no-man-pages']
-    modules = [
-        'javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.fxml',
-        'java.sql', 'java.logging', 'java.xml', 'java.desktop',
-        'java.xml.crypto', 'java.security.jgss'
-    ]
+// --- jpackage configuration ---
+def jpackageOutputDir = layout.buildDirectory.dir('jpackage')
 
-    launcher {
-        noConsole = true
-        jvmArgs = [
-            '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
-            '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
-        ]
+tasks.register('jpackageImage', Exec) {
+    group = 'distribution'
+    description = 'Creates a platform-specific application image using jpackage'
+    dependsOn 'installDist'
+
+    def appDir = layout.buildDirectory.dir('install/ofx2csv/lib').get().asFile.toString()
+    def mainJar = fileTree(appDir).matching { include '*.jar' }.files.find { !it.name.startsWith('javafx-') && !it.name.startsWith('ofx4j-') && !it.name.startsWith('poi-') }
+
+    commandLine 'jpackage'
+    args '--name', 'Conversor OFX'
+    args '--main-class', 'com.mcs.ofx2csv.Ofx2CsvApp'
+    args '--main-jar', mainJar.name
+    args '--input', appDir
+    args '--dest', jpackageOutputDir.get().toString()
+    args '--resource-dir', file('src/packaging').absolutePath
+    args '--add-modules', 'javafx.controls,javafx.fxml'
+    args '--module-path', System.getProperty('java.home') + '/lib'
+
+    def jvmArgs = ['--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+                    '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED']
+    args '--java-options', jvmArgs.collect { "'$it'" }.join(' ')
+
+    // Only run on platforms where jpackage supports installers
+    onlyIf {
+        file(System.getProperty('java.home') + '/bin/jpackage').exists()
+    }
+}
+
+tasks.register('jpackageInstaller', Exec) {
+    group = 'distribution'
+    description = 'Creates a platform-specific installer using jpackage'
+    dependsOn 'jpackageImage'
+
+    def osName = System.getProperty('os.name').toLowerCase()
+    def installerType = osName.contains('win') ? 'msi' : (osName.contains('mac') ? 'dmg' : 'deb')
+
+    commandLine 'jpackage'
+    args '--type', installerType
+    args '--name', 'Conversor OFX'
+    args '--app-version', project.version
+    args '--dest', jpackageOutputDir.get().toString()
+    args '--resource-dir', file('src/packaging').absolutePath
+    args '--add-modules', 'javafx.controls,javafx.fxml'
+    args '--module-path', System.getProperty('java.home') + '/lib'
+    args '--file-associations', file('src/packaging/ofx-association.properties').absolutePath
+
+    // Windows-specific installer options
+    if (osName.contains('win')) {
+        args '--win-menu'
+        args '--win-shortcut'
+        args '--win-dir-chooser'
     }
 
-    jpackage {
-        // Workaround: Gradle 9.x requires explicit dependency declaration
-        tasks.jpackageImage.dependsOn(tasks.runtime)
-        tasks.jpackage.dependsOn(tasks.jpackageImage)
-
-        outputDir = 'jpackage'
-        imageName = 'Conversor OFX'
-        installerName = 'ConversorOFX'
-        installerType = 'msi'
-        appVersion = project.version
-        resourceDir = project.file('src/packaging')
-
-        jvmArgs = [
-            '--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
-            '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED'
-        ]
-
-        installerOptions = [
-            '--win-menu',
-            '--win-shortcut',
-            '--win-dir-chooser',
-            '--file-associations', project.file('src/packaging/ofx-association.properties').absolutePath
-        ]
-
-        // Skip installer on non-Windows (Linux/macOS: only produce app-image)
-        if (!System.getProperty('os.name').toLowerCase().contains('win')) {
-            skipInstaller = true
-        }
+    onlyIf {
+        osName.contains('win') || osName.contains('mac') || osName.contains('linux')
     }
 }

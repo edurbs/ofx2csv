@@ -37,7 +37,7 @@ jobs:
         run: ./gradlew test --no-daemon
 
       - name: Build MSI installer
-        run: ./gradlew jpackage --no-daemon
+        run: ./gradlew jpackageInstaller --no-daemon
 
       - name: List build outputs
         run: |
