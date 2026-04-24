@@ -252,6 +252,17 @@ public class MainController {
     // --- User Actions ---
 
     @FXML
+    private void openGitHub() {
+        try {
+            new ProcessBuilder("xdg-open", "https://github.com/edurbs").start();
+        } catch (Exception ignored) {
+            if (Desktop.isDesktopSupported()) {
+                try { Desktop.getDesktop().browse(java.net.URI.create("https://github.com/edurbs")); } catch (Exception e) { /* ignore */ }
+            }
+        }
+    }
+
+    @FXML
     private void pickFiles() {
         FileChooser chooser = new FileChooser();
         chooser.setTitle("Selecionar arquivos OFX");

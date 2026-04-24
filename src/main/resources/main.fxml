@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
@@ -58,8 +59,8 @@
                 <Label text="Nenhum arquivo selecionado" styleClass="text-muted"/>
             </placeholder>
             <columns>
-                <TableColumn fx:id="colDate" text="Data Balancete" prefWidth="120" resizable="false"/>
-                <TableColumn fx:id="colHistorico" text="Historico" prefWidth="300"/>
+                <TableColumn fx:id="colDate" text="Data Balancete" prefWidth="110" resizable="false"/>
+                <TableColumn fx:id="colHistorico" text="Historico" prefWidth="220"/>
                 <TableColumn fx:id="colDebito" text="Débito" prefWidth="90" resizable="false"/>
                 <TableColumn fx:id="colCredito" text="Crédito" prefWidth="90" resizable="false"/>
                 <TableColumn fx:id="colSoma" text="Soma" prefWidth="90" resizable="false"/>
@@ -72,13 +73,14 @@
 
     <!-- Zone 4: Convert Button + Feedback Bar -->
     <VBox spacing="0" styleClass="card" style="-fx-padding: 0;">
-        <HBox alignment="CENTER" style="-fx-padding: 16px;">
+        <VBox alignment="CENTER" spacing="12" style="-fx-padding: 16px;">
             <Button fx:id="convertButton" styleClass="button-primary" text="Converter"
-                    onAction="#convert" defaultButton="true"
-                    HBox.hgrow="NEVER">
+                    onAction="#convert" defaultButton="true">
                 <tooltip><Tooltip text="Converter arquivos (Enter)"/></tooltip>
             </Button>
-        </HBox>
+            <Hyperlink text="github.com/edurbs" style="-fx-font-size: 11px; -fx-text-fill: #9CA3AF; -fx-border-color: transparent;"
+                       onAction="#openGitHub"/>
+        </VBox>
         <!-- Feedback bar (initially hidden) -->
         <VBox fx:id="feedbackBar" styleClass="feedback-bar" managed="false" visible="false">
             <HBox alignment="CENTER_LEFT" spacing="4">
