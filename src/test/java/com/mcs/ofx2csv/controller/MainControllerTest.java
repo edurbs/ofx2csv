@@ -71,6 +71,7 @@ class MainControllerTest {
         // Set files (using interact to ensure FX thread processes the update)
         Path fakeFile = Path.of("/nonexistent.ofx");
         robot.interact(() -> controller.setSelectedFiles(List.of(fakeFile.toFile())));
+        robot.interact(() -> controller.setOutputDir(""));
         // Wait for async Platform.runLater to execute
         robot.sleep(100);
 
