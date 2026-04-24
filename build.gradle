@@ -60,24 +60,29 @@ tasks.register('jpackageImage', Exec) {
     description = 'Creates a platform-specific application image using jpackage'
     dependsOn 'installDist'
 
-    def appDir = layout.buildDirectory.dir('install/ofx2csv/lib').get().asFile.toString()
-    def mainJar = fileTree(appDir).matching { include '*.jar' }.files.find { !it.name.startsWith('javafx-') && !it.name.startsWith('ofx4j-') && !it.name.startsWith('poi-') }
+    doFirst {
+        def appDir = layout.buildDirectory.dir('install/ofx2csv/lib').get().asFile.toString()
+        def mainJar = fileTree(appDir).matching { include '*.jar' }.files.find { !it.name.startsWith('javafx-') && !it.name.startsWith('ofx4j-') && !it.name.startsWith('poi-') }
 
-    commandLine 'jpackage'
-    args '--name', 'Conversor OFX'
-    args '--main-class', 'com.mcs.ofx2csv.Ofx2CsvApp'
-    args '--main-jar', mainJar.name
-    args '--input', appDir
-    args '--dest', jpackageOutputDir.get().toString()
-    args '--resource-dir', file('src/packaging').absolutePath
-    args '--add-modules', 'javafx.controls,javafx.fxml'
-    args '--module-path', System.getProperty('java.home') + '/lib'
+        if (mainJar == null) {
+            throw new GradleException("Cannot find main application jar in ${appDir}")
+        }
 
-    def jvmArgs = ['--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
-                    '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED']
-    args '--java-options', jvmArgs.collect { "'$it'" }.join(' ')
+        commandLine 'jpackage'
+        args '--name', 'Conversor OFX'
+        args '--main-class', 'com.mcs.ofx2csv.Ofx2CsvApp'
+        args '--main-jar', mainJar.name
+        args '--input', appDir
+        args '--dest', jpackageOutputDir.get().toString()
+        args '--resource-dir', file('src/packaging').absolutePath
+        args '--add-modules', 'javafx.controls,javafx.fxml'
+        args '--module-path', System.getProperty('java.home') + '/lib'
 
-    // Only run on platforms where jpackage supports installers
+        def jvmArgs = ['--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
+                        '--add-opens=javafx.controls/com.sun.javafx.scene.control.behavior=ALL-UNNAMED']
+        args '--java-options', jvmArgs.collect { "'$it'" }.join(' ')
+    }
+
     onlyIf {
         file(System.getProperty('java.home') + '/bin/jpackage').exists()
     }
