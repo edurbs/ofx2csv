@@ -130,7 +130,6 @@ class MainControllerTest {
             assertEquals("Historico", header.getCell(1).getStringCellValue());
             assertEquals("CREDITO", header.getCell(2).getStringCellValue());
             assertEquals("DEBITO", header.getCell(3).getStringCellValue());
-            assertEquals("SOMA", header.getCell(4).getStringCellValue());
 
             assertTrue(sheet.getPhysicalNumberOfRows() > 1, "Should have data rows");
 
@@ -139,13 +138,10 @@ class MainControllerTest {
                 if (row == null) continue;
                 double credito = row.getCell(2).getNumericCellValue();
                 double debito = row.getCell(3).getNumericCellValue();
-                double soma = row.getCell(4).getNumericCellValue();
 
                 if (debito != 0 && credito != 0) {
                     fail("Row " + i + ": both DEBITO and CREDITO are non-zero");
                 }
-                assertEquals(soma, debito + credito, 0.001,
-                        "Row " + i + ": SOMA should equal DEBITO + CREDITO");
             }
         }
     }

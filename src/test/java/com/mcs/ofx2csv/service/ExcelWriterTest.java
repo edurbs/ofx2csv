@@ -62,7 +62,6 @@ class ExcelWriterTest {
             assertEquals("Historico", header.getCell(1).getStringCellValue());
             assertEquals("CREDITO", header.getCell(2).getStringCellValue());
             assertEquals("DEBITO", header.getCell(3).getStringCellValue());
-            assertEquals("SOMA", header.getCell(4).getStringCellValue());
 
             // Verify first data row (negative amount -> debito)
             Row row1 = sheet.getRow(1);
@@ -70,7 +69,6 @@ class ExcelWriterTest {
             assertEquals("JOAO - PIX", row1.getCell(1).getStringCellValue());
             assertEquals(0.0, row1.getCell(2).getNumericCellValue(), 0.001);
             assertEquals(150.0, row1.getCell(3).getNumericCellValue(), 0.001);
-            assertEquals(150.0, row1.getCell(4).getNumericCellValue(), 0.001);
 
             // Verify second data row (positive amount -> credito)
             Row row2 = sheet.getRow(2);
@@ -78,7 +76,6 @@ class ExcelWriterTest {
             assertEquals("MARIA - Transfer", row2.getCell(1).getStringCellValue());
             assertEquals(500.5, row2.getCell(2).getNumericCellValue(), 0.001);
             assertEquals(0.0, row2.getCell(3).getNumericCellValue(), 0.001);
-            assertEquals(500.5, row2.getCell(4).getNumericCellValue(), 0.001);
         }
     }
 }
