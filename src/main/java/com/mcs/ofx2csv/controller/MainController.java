@@ -559,10 +559,12 @@ public class MainController {
     private void previewFile(File file) {
         previewTable.getItems().clear();
         try {
-            List<TransactionRow> rows = ofxParser.parse(file.toPath());
+            List<TransactionRow> rows = ofxParser.parse(file.toPath()).stream()
+                    .filter(tr -> tr.debito() != 0 || tr.credito() != 0)
+                    .toList();
             previewTable.getItems().setAll(rows);
-            transactionCountLabel.setText(rows.size() + " transa\u00e7\u00e3o" +
-                    (rows.size() == 1 ? "" : "\u00f5es"));
+            transactionCountLabel.setText(rows.size() + " transa\u00e7" +
+                    (rows.size() == 1 ? "\u00e3o" : "\u00f5es"));
             transactionCountLabel.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 11px;");
         } catch (Throwable t) {
             transactionCountLabel.setText("Erro: " + t.getClass().getSimpleName() + " - " + t.getMessage());
