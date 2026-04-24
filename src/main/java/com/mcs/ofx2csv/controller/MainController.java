@@ -311,8 +311,8 @@ public class MainController {
                         String baseName = removeExtension(file.getName());
                         excelWriter.write(rows, outputDir, baseName);
                         successCount++;
-                    } catch (Exception e) {
-                        errors.add(file.getName() + ": " + e.getMessage());
+                    } catch (Throwable t) {
+                        errors.add(file.getName() + ": " + t.getClass().getSimpleName() + " - " + t.getMessage());
                     }
                 }
 
@@ -343,6 +343,16 @@ public class MainController {
                 });
             }
         };
+
+        conversionTask.setOnFailed(event -> {
+            Throwable t = event.getSource().getException();
+            String msg = t != null ? t.getClass().getSimpleName() + ": " + t.getMessage() : "Erro desconhecido";
+            javafx.application.Platform.runLater(() -> {
+                showFeedback("error", "Erro na convers\u00e3o", msg);
+                converting = false;
+                updateConvertButtonState();
+            });
+        });
 
         new Thread(conversionTask).start();
     }
@@ -519,8 +529,8 @@ public class MainController {
             transactionCountLabel.setText(rows.size() + " transa\u00e7\u00e3o" +
                     (rows.size() == 1 ? "" : "\u00f5es"));
             transactionCountLabel.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 11px;");
-        } catch (Exception e) {
-            transactionCountLabel.setText("Erro ao analisar " + file.getName());
+        } catch (Throwable t) {
+            transactionCountLabel.setText("Erro: " + t.getClass().getSimpleName() + " - " + t.getMessage());
             transactionCountLabel.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 11px;");
         }
     }
