@@ -10,12 +10,20 @@ Aplicativo desktop em JavaFX 25 para converter extratos bancários brasileiros n
 - Filtro automático de transações com valor zero (marcadores de saldo)
 - Interface gráfica com seleção de arquivos e diretório de saída
 - Suporte a conversão de múltiplos arquivos ao mesmo tempo
+- Arrastar e soltar arquivos OFX diretamente na interface
+- Associação automática com arquivos `.ofx` no Windows (clique duplo abre o app)
 
-## Requisitos
+## Instalação (Windows)
 
-- Java 21 ou superior
+Baixe o instalador `.msi` na página de [Releases](https://github.com/edurbs/ofx2csv/releases). O instalador cria atalhos no Menu Iniciar e na Área de Trabalho, e associa arquivos `.ofx` ao aplicativo.
 
-## Como usar
+Não é necessário instalar Java separadamente — o instalador inclui o runtime.
+
+## Desenvolvimento
+
+### Requisitos
+
+- Java 25 (Liberica JDK com JavaFX ou Temurin + JavaFX Maven)
 
 ### Compilar
 
@@ -35,6 +43,12 @@ Aplicativo desktop em JavaFX 25 para converter extratos bancários brasileiros n
 ./gradlew test
 ```
 
+### Gerar instalador
+
+```bash
+./gradlew jpackageInstaller
+```
+
 ## Formato de saída
 
 | Coluna | Descrição | Formato |
@@ -50,6 +64,7 @@ O arquivo de saída é salvo como `{nome_do_arquivo_original}.xlsx` no diretóri
 ## Tecnologias
 
 - [JavaFX 25](https://openjfx.io/) — Interface gráfica
+- [jpackage](https://docs.oracle.com/en/java/javase/25/docs/specs/man/jpackage.html) + [GitHub Actions](https://github.com/features/actions) — Instalador MSI para Windows
 - [OFX4J](https://github.com/webcohesion/ofx4j) — Parser de arquivos OFX
 - [Apache POI](https://poi.apache.org/) — Geração de planilhas Excel
 - [JUnit 5](https://junit.org/junit5/) + [TestFX](https://github.com/TestFX/TestFX) — Testes unitários e de interface

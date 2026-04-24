@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C3AED"/>
+      <stop offset="100%" style="stop-color:#5B21B6"/>
+    </linearGradient>
+    <linearGradient id="arrow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#A78BFA"/>
+      <stop offset="100%" style="stop-color:#C4B5FD"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#1F2937" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect x="16" y="16" width="224" height="224" rx="40" ry="40" fill="url(#bg)" filter="url(#shadow)"/>
+
+  <!-- Left side: OFX document -->
+  <g transform="translate(30, 50)">
+    <!-- Document shape -->
+    <rect x="0" y="0" width="80" height="100" rx="6" ry="6" fill="#FFFFFF" opacity="0.95"/>
+    <polygon points="55,0 80,25 55,25" fill="#E5E7EB"/>
+    <!-- OFX text lines -->
+    <text x="12" y="50" font-family="Segoe UI, Arial, sans-serif" font-weight="bold" font-size="18" fill="#7C3AED">OFX</text>
+    <!-- Decorative lines -->
+    <line x1="12" y1="62" x2="68" y2="62" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round"/>
+    <line x1="12" y1="72" x2="55" y2="72" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round"/>
+    <line x1="12" y1="82" x2="62" y2="82" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Center: Arrow -->
+  <g transform="translate(118, 80)">
+    <!-- Arrow body -->
+    <rect x="0" y="12" width="24" height="12" rx="4" ry="4" fill="url(#arrow)"/>
+    <!-- Arrow head -->
+    <polygon points="24,18 40,18 24,6" fill="#C4B5FD"/>
+    <polygon points="24,18 40,18 24,30" fill="#A78BFA"/>
+  </g>
+
+  <!-- Right side: Excel spreadsheet -->
+  <g transform="translate(148, 50)">
+    <!-- Spreadsheet shape -->
+    <rect x="0" y="0" width="80" height="100" rx="6" ry="6" fill="#FFFFFF" opacity="0.95"/>
+    <!-- Green top bar (Excel-like) -->
+    <rect x="0" y="0" width="80" height="28" rx="6" ry="6" fill="#10B981"/>
+    <rect x="0" y="14" width="80" height="14" fill="#10B981"/>
+    <!-- X text -->
+    <text x="10" y="22" font-family="Segoe UI, Arial, sans-serif" font-weight="bold" font-size="18" fill="#FFFFFF">X</text>
+    <!-- Grid lines -->
+    <line x1="0" y1="42" x2="80" y2="42" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="0" y1="58" x2="80" y2="58" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="0" y1="74" x2="80" y2="74" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="28" y1="28" x2="28" y2="100" stroke="#E5E7EB" stroke-width="1"/>
+    <line x1="56" y1="28" x2="56" y2="100" stroke="#E5E7EB" stroke-width="1"/>
+    <!-- Small data dots -->
+    <rect x="8" y="34" width="14" height="4" rx="1" fill="#7C3AED" opacity="0.5"/>
+    <rect x="36" y="34" width="14" height="4" rx="1" fill="#D1D5DB"/>
+    <rect x="64" y="34" width="8" height="4" rx="1" fill="#D1D5DB"/>
+    <rect x="8" y="50" width="14" height="4" rx="1" fill="#7C3AED" opacity="0.5"/>
+    <rect x="36" y="50" width="14" height="4" rx="1" fill="#D1D5DB"/>
+    <rect x="64" y="50" width="8" height="4" rx="1" fill="#D1D5DB"/>
+    <rect x="8" y="66" width="14" height="4" rx="1" fill="#7C3AED" opacity="0.5"/>
+    <rect x="36" y="66" width="14" height="4" rx="1" fill="#D1D5DB"/>
+    <rect x="64" y="66" width="8" height="4" rx="1" fill="#D1D5DB"/>
+    <rect x="8" y="82" width="14" height="4" rx="1" fill="#7C3AED" opacity="0.5"/>
+    <rect x="36" y="82" width="14" height="4" rx="1" fill="#D1D5DB"/>
+    <rect x="64" y="82" width="8" height="4" rx="1" fill="#D1D5DB"/>
+  </g>
+
+  <!-- Bottom text -->
+  <text x="128" y="192" font-family="Segoe UI, Arial, sans-serif" font-weight="600" font-size="14" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">OFX → EXCEL</text>
+</svg>

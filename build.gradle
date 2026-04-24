@@ -75,6 +75,7 @@ tasks.register('jpackageImage', Exec) {
         args '--input', appDir
         args '--dest', jpackageOutputDir.get().toString()
         args '--resource-dir', file('src/packaging').absolutePath
+        args '--icon', file('src/packaging/Conversor OFX.ico').absolutePath
         args '--add-modules', 'javafx.controls,javafx.fxml'
         args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
 
@@ -109,6 +110,7 @@ tasks.register('jpackageInstaller', Exec) {
         args '--app-version', project.version
         args '--dest', jpackageOutputDir.get().toString()
         args '--resource-dir', file('src/packaging').absolutePath
+        args '--icon', file('src/packaging/Conversor OFX.ico').absolutePath
         args '--add-modules', 'javafx.controls,javafx.fxml'
         args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
         args '--file-associations', file('src/packaging/ofx-association.properties').absolutePath
