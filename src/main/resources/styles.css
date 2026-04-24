@@ -1,0 +1,263 @@
+/* ============================================================
+   Modern UI Theme — Conversor OFX → Excel
+   Inspired by Brazilian fintech aesthetics (Nubank/Inter)
+   ============================================================ */
+
+/* --- Design Tokens --- */
+.root {
+    -fx-background-color: #F5F5F7;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* --- Card Surface --- */
+.card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 2);
+    -fx-padding: 16px;
+}
+
+/* --- Primary Button (Convert) --- */
+.button-primary {
+    -fx-background-color: #7C3AED;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 24px;
+    -fx-cursor: hand;
+    -fx-border-width: 0;
+}
+.button-primary:hover {
+    -fx-background-color: #6D28D9;
+}
+.button-primary:pressed {
+    -fx-background-color: #5B21B6;
+}
+.button-primary:disabled {
+    -fx-background-color: #D1D5DB;
+    -fx-text-fill: #9CA3AF;
+    -fx-cursor: default;
+}
+
+/* --- Secondary Button (folder picker, file chip remove) --- */
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6B7280;
+    -fx-border-color: #D1D5DB;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 6px 10px;
+    -fx-cursor: hand;
+}
+.button-secondary:hover {
+    -fx-background-color: #F3F4F6;
+    -fx-border-color: #9CA3AF;
+}
+
+/* --- Drop Zone --- */
+.drop-zone {
+    -fx-border-color: #D1D5DB;
+    -fx-border-style: dashed;
+    -fx-border-width: 2px;
+    -fx-border-radius: 12px;
+    -fx-background-color: #FAFAFA;
+    -fx-background-radius: 12px;
+    -fx-padding: 24px;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+}
+.drop-zone:hover {
+    -fx-border-color: #7C3AED;
+    -fx-background-color: #F5F3FF;
+}
+.drop-zone-active {
+    -fx-border-color: #7C3AED;
+    -fx-border-width: 3px;
+    -fx-border-style: dashed;
+    -fx-background-color: #EDE9FE;
+}
+
+/* --- File Chips --- */
+.file-chip {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 6px;
+    -fx-padding: 4px 8px;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+.file-chip .chip-label {
+    -fx-text-fill: #374151;
+    -fx-font-size: 12px;
+}
+.file-chip .chip-remove {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9CA3AF;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0 2px 0 6px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-background-radius: 0;
+}
+.file-chip .chip-remove:hover {
+    -fx-text-fill: #EF4444;
+}
+
+/* --- Section Labels --- */
+.section-label {
+    -fx-text-fill: #374151;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+
+/* --- Text Tokens --- */
+.text-primary { -fx-text-fill: #1F2937; }
+.text-muted { -fx-text-fill: #6B7280; }
+.text-muted-small { -fx-text-fill: #6B7280; -fx-font-size: 11px; }
+
+/* --- Directory Field --- */
+.dir-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D1D5DB;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #1F2937;
+}
+.dir-field:disabled, .dir-field:read-only {
+    -fx-opacity: 1.0;
+    -fx-background-color: #F9FAFB;
+}
+
+/* --- Preview Table --- */
+.table-view {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #E5E7EB;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 0;
+}
+.table-view .column-header-background {
+    -fx-background-color: #F3F4F6;
+    -fx-background-radius: 8px 8px 0 0;
+}
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #374151;
+    -fx-padding: 8px 12px;
+}
+.table-view .table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 6px 12px;
+    -fx-font-size: 12px;
+    -fx-text-fill: #1F2937;
+}
+.table-row-cell:odd {
+    -fx-background-color: #F9FAFB;
+}
+.table-row-cell:even {
+    -fx-background-color: #FFFFFF;
+}
+.table-row-cell:selected {
+    -fx-background-color: #EDE9FE;
+    -fx-text-fill: #1F2937;
+}
+.table-row-cell:hover {
+    -fx-background-color: #F5F3FF;
+}
+
+/* Monospace alignment for numeric cells */
+.mono-cell {
+    -fx-font-family: "JetBrains Mono", "Consolas", "Monospaced";
+    -fx-alignment: CENTER-RIGHT;
+}
+
+/* --- Feedback Bar --- */
+.feedback-bar {
+    -fx-padding: 10px 16px;
+    -fx-background-radius: 0 0 12px 12px;
+    -fx-alignment: CENTER_LEFT;
+}
+.feedback-success {
+    -fx-background-color: #10B981;
+}
+.feedback-error {
+    -fx-background-color: #EF4444;
+}
+.feedback-success .feedback-text,
+.feedback-error .feedback-text {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+}
+.feedback-success .feedback-icon,
+.feedback-error .feedback-icon {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 0 8px 0 0;
+}
+.feedback-action {
+    -fx-text-fill: #DBEAFE;
+    -fx-underline: true;
+    -fx-font-size: 12px;
+    -fx-padding: 0 0 0 12px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+.feedback-dismiss {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0 0 0 8px;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-background-radius: 0;
+}
+.feedback-dismiss:hover {
+    -fx-text-fill: white;
+}
+.feedback-details {
+    -fx-background-color: rgba(0,0,0,0.1);
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-border-color: transparent;
+    -fx-control-inner-background: transparent;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 8px;
+}
+
+/* --- Focus Indicator (Accessibility) --- */
+*:focused {
+    -fx-focus-color: #7C3AED;
+    -fx-faint-focus-color: rgba(124, 58, 237, 0.12);
+}
+
+/* --- Scrollbar --- */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+.scroll-bar:vertical > .thumb {
+    -fx-background-color: #D1D5DB;
+    -fx-background-radius: 4px;
+}
+.scroll-bar:vertical > .thumb:hover {
+    -fx-background-color: #9CA3AF;
+}
+.scroll-bar:horizontal > .thumb {
+    -fx-background-color: #D1D5DB;
+    -fx-background-radius: 4px;
+}
+.scroll-bar > .increment-button,
+.scroll-bar > .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
