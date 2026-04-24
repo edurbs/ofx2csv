@@ -8,7 +8,7 @@ on:
 
 env:
   JAVA_VERSION: '25'
-  JAVA_DISTRIBUTION: 'temurin'
+  JAVA_DISTRIBUTION: 'liberica'
 
 jobs:
   build-msi:
@@ -18,11 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 25
+      - name: Set up JDK 25 (Liberica with bundled JavaFX)
         uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-package: jdk+fx
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -34,7 +35,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Run tests
-        run: ./gradlew test --no-daemon --no-build-cache --refresh-dependencies
+        run: ./gradlew test --no-daemon
 
       - name: Build MSI installer
         run: ./gradlew jpackageInstaller --no-daemon
