@@ -76,7 +76,7 @@ tasks.register('jpackageImage', Exec) {
         args '--dest', jpackageOutputDir.get().toString()
         args '--resource-dir', file('src/packaging').absolutePath
         args '--icon', file('src/packaging/Conversor OFX.ico').absolutePath
-        args '--add-modules', 'javafx.controls,javafx.fxml'
+        args '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.logging,java.xml,java.desktop'
         args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
 
         def jvmArgs = ['--add-opens=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED',
@@ -111,7 +111,7 @@ tasks.register('jpackageInstaller', Exec) {
         args '--dest', jpackageOutputDir.get().toString()
         args '--resource-dir', file('src/packaging').absolutePath
         args '--icon', file('src/packaging/Conversor OFX.ico').absolutePath
-        args '--add-modules', 'javafx.controls,javafx.fxml'
+        args '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.logging,java.xml,java.desktop'
         args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
         args '--file-associations', file('src/packaging/ofx-association.properties').absolutePath
 
