@@ -152,6 +152,9 @@ public class MainController {
                     selectedFiles.clear();
                     selectedFiles.addAll(ofxFiles);
                     updateFileListUI();
+                    if (dirField.getText().isBlank()) {
+                        setDefaultOutputDir();
+                    }
                     updatePreviewTable();
                     updateConvertButtonState();
                     success = true;
@@ -191,6 +194,7 @@ public class MainController {
                         selectedFiles.clear();
                         updateFileListUI();
                         updatePreviewTable();
+                        dirField.setText("");
                         updateConvertButtonState();
                         hideFeedback();
                         event.consume();
@@ -231,9 +235,14 @@ public class MainController {
     public void setSelectedFiles(List<File> files) {
         selectedFiles.clear();
         selectedFiles.addAll(files);
-        runIfFxThread(this::updateFileListUI);
-        runIfFxThread(this::updatePreviewTable);
-        runIfFxThread(this::updateConvertButtonState);
+        runIfFxThread(() -> {
+            updateFileListUI();
+            if (dirField.getText().isBlank()) {
+                setDefaultOutputDir();
+            }
+            updatePreviewTable();
+            updateConvertButtonState();
+        });
     }
 
     public String getLastAlertMessage() {
@@ -273,6 +282,9 @@ public class MainController {
             selectedFiles.clear();
             selectedFiles.addAll(files);
             updateFileListUI();
+            if (dirField.getText().isBlank()) {
+                setDefaultOutputDir();
+            }
             updatePreviewTable();
             updateConvertButtonState();
         }
@@ -474,6 +486,9 @@ public class MainController {
             removeBtn.setOnAction(e -> {
                 selectedFiles.remove(index);
                 updateFileListUI();
+                if (selectedFiles.isEmpty()) {
+                    dirField.setText("");
+                }
                 updatePreviewTable();
                 updateConvertButtonState();
             });
@@ -487,6 +502,15 @@ public class MainController {
 
         fileCountLabel.setVisible(true);
         fileCountLabel.setManaged(true);
+    }
+
+    private void setDefaultOutputDir() {
+        if (!selectedFiles.isEmpty()) {
+            File parent = selectedFiles.getFirst().getParentFile();
+            if (parent != null) {
+                dirField.setText(parent.getAbsolutePath());
+            }
+        }
     }
 
     private void updateConvertButtonState() {
@@ -523,13 +547,13 @@ public class MainController {
             fileSelector.getSelectionModel().selectFirst();
             fileSelector.setVisible(true);
             fileSelector.setManaged(true);
+            // previewFile() is called by the selection listener above
         } else {
             fileSelector.getItems().clear();
             fileSelector.setVisible(false);
             fileSelector.setManaged(false);
+            previewFile(selectedFiles.getFirst());
         }
-
-        previewFile(selectedFiles.getFirst());
     }
 
     private void previewFile(File file) {

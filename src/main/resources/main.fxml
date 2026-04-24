@@ -54,7 +54,7 @@
             <ChoiceBox fx:id="fileSelector" visible="false" managed="false" minWidth="150"/>
             <Label fx:id="transactionCountLabel" styleClass="text-muted-small"/>
         </HBox>
-        <TableView fx:id="previewTable" VBox.vgrow="ALWAYS" maxHeight="180">
+        <TableView fx:id="previewTable" VBox.vgrow="ALWAYS" maxHeight="360">
             <placeholder>
                 <Label text="Nenhum arquivo selecionado" styleClass="text-muted"/>
             </placeholder>
@@ -73,12 +73,12 @@
 
     <!-- Zone 4: Convert Button + Feedback Bar -->
     <VBox spacing="0" styleClass="card" style="-fx-padding: 0;">
-        <VBox alignment="CENTER" spacing="12" style="-fx-padding: 16px;">
+        <VBox alignment="CENTER" style="-fx-padding: 16px;">
             <Button fx:id="convertButton" styleClass="button-primary" text="Converter"
                     onAction="#convert" defaultButton="true">
                 <tooltip><Tooltip text="Converter arquivos (Enter)"/></tooltip>
             </Button>
-            <Hyperlink text="github.com/edurbs" style="-fx-font-size: 11px; -fx-text-fill: #9CA3AF; -fx-border-color: transparent;"
+            <Hyperlink text="github.com/edurbs" style="-fx-font-size: 11px; -fx-text-fill: #9CA3AF; -fx-border-color: transparent; -fx-padding: 4px 0 0 0;"
                        onAction="#openGitHub"/>
         </VBox>
         <!-- Feedback bar (initially hidden) -->

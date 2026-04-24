@@ -34,7 +34,7 @@ public class Ofx2CsvApp extends Application {
         scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.setWidth(750);
-        stage.setHeight(550);
+        stage.setHeight(700);
         stage.setResizable(false);
         stage.centerOnScreen();
 
