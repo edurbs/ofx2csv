@@ -63,7 +63,6 @@
                 <TableColumn fx:id="colHistorico" text="Historico" prefWidth="220"/>
                 <TableColumn fx:id="colDebito" text="Débito" prefWidth="90" resizable="false"/>
                 <TableColumn fx:id="colCredito" text="Crédito" prefWidth="90" resizable="false"/>
-                <TableColumn fx:id="colSoma" text="Soma" prefWidth="90" resizable="false"/>
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>

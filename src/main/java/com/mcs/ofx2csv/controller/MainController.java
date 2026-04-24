@@ -53,7 +53,6 @@ public class MainController {
     @FXML private TableColumn<TransactionRow, String> colHistorico;
     @FXML private TableColumn<TransactionRow, Number> colDebito;
     @FXML private TableColumn<TransactionRow, Number> colCredito;
-    @FXML private TableColumn<TransactionRow, Number> colSoma;
     @FXML private Label transactionCountLabel;
     @FXML private ChoiceBox<File> fileSelector;
 
@@ -103,10 +102,6 @@ public class MainController {
         colCredito.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleDoubleProperty(cellData.getValue().credito()));
         colCredito.setCellFactory(col -> new NumericCell());
-
-        colSoma.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleDoubleProperty(cellData.getValue().soma()));
-        colSoma.setCellFactory(col -> new NumericCell());
     }
 
     private void setupDragAndDrop() {

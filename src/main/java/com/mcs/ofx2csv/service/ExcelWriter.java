@@ -22,7 +22,7 @@ public class ExcelWriter {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private static final String[] HEADERS = {
-            "Data Balancete", "Historico", "CREDITO", "DEBITO", "SOMA"
+            "Data Balancete", "Historico", "CREDITO", "DEBITO"
     };
 
     /**
@@ -64,9 +64,6 @@ public class ExcelWriter {
                 var cDeb = row.createCell(3);
                 cDeb.setCellValue(tr.debito());
                 cDeb.setCellStyle(currencyStyle);
-                var cSoma = row.createCell(4);
-                cSoma.setCellValue(tr.soma());
-                cSoma.setCellStyle(currencyStyle);
             }
 
             // Auto-size columns
