@@ -34,7 +34,7 @@ jobs:
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Run tests
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test --no-daemon --no-build-cache --refresh-dependencies
 
       - name: Build MSI installer
         run: ./gradlew jpackageInstaller --no-daemon
