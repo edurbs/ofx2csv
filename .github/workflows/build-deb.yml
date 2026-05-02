@@ -1,4 +1,4 @@
-name: Build Windows MSI Installer
+name: Build Linux DEB Installer
 
 on:
   push:
@@ -14,12 +14,15 @@ env:
   JAVA_DISTRIBUTION: 'liberica'
 
 jobs:
-  build-msi:
-    runs-on: windows-2025
+  build-deb:
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install jpackage dependencies
+        run: sudo apt-get update && sudo apt-get install -y libfuse2
 
       - name: Set up JDK 25 (Liberica with bundled JavaFX)
         uses: actions/setup-java@v4
@@ -40,19 +43,17 @@ jobs:
       - name: Run tests
         run: ./gradlew test --no-daemon
 
-      - name: Build MSI installer
+      - name: Build DEB installer
         run: ./gradlew jpackageInstaller --no-daemon
 
       - name: List build outputs
-        run: |
-          echo "=== jpackage output ==="
-          Get-ChildItem -Recurse -Path "build\jpackage" | ForEach-Object { $_.FullName }
+        run: find build/jpackage -type f -ls
 
-      - name: Upload MSI artifact
+      - name: Upload DEB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ConversorOFX-Installer
-          path: build/jpackage/*.msi
+          name: ConversorOFX-DEB-Installer
+          path: build/jpackage/*.deb
           retention-days: 30
 
       - name: Create GitHub Release
@@ -80,6 +81,6 @@ jobs:
             - Abre automaticamente ao clicar em arquivos `.ofx`
           draft: false
           prerelease: false
-          files: build/jpackage/*.msi
+          files: build/jpackage/*.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

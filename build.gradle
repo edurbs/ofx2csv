@@ -61,6 +61,11 @@ tasks.register('jpackageImage', Exec) {
     dependsOn 'installDist'
 
     doFirst {
+        def osName = System.getProperty('os.name').toLowerCase()
+        def iconFile = osName.contains('win')
+            ? file('src/packaging/Conversor OFX.ico')
+            : file('src/packaging/Conversor OFX.png')
+
         def appDir = layout.buildDirectory.dir('install/ofx2csv/lib').get().asFile.toString()
         def mainJar = fileTree(appDir).matching { include '*.jar' }.files.find { !it.name.startsWith('javafx-') && !it.name.startsWith('ofx4j-') && !it.name.startsWith('poi-') }
 
@@ -75,7 +80,7 @@ tasks.register('jpackageImage', Exec) {
         args '--input', appDir
         args '--dest', jpackageOutputDir.get().toString()
         args '--resource-dir', file('src/packaging').absolutePath
-        args '--icon', file('src/packaging/Conversor OFX.ico').absolutePath
+        args '--icon', iconFile.absolutePath
         args '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.logging,java.xml,java.desktop'
         args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
 
@@ -92,6 +97,9 @@ tasks.register('jpackageInstaller', Exec) {
 
     def osName = System.getProperty('os.name').toLowerCase()
     def installerType = osName.contains('win') ? 'msi' : (osName.contains('mac') ? 'dmg' : 'deb')
+    def iconFile = osName.contains('win')
+        ? file('src/packaging/Conversor OFX.ico')
+        : file('src/packaging/Conversor OFX.png')
 
     doFirst {
         def appDir = layout.buildDirectory.dir('install/ofx2csv/lib').get().asFile.toString()
@@ -110,7 +118,7 @@ tasks.register('jpackageInstaller', Exec) {
         args '--app-version', project.version
         args '--dest', jpackageOutputDir.get().toString()
         args '--resource-dir', file('src/packaging').absolutePath
-        args '--icon', file('src/packaging/Conversor OFX.ico').absolutePath
+        args '--icon', iconFile.absolutePath
         args '--add-modules', 'javafx.controls,javafx.fxml,java.sql,java.logging,java.xml,java.desktop'
         args '--module-path', new File(System.getProperty('java.home'), 'lib').absolutePath
         args '--file-associations', file('src/packaging/ofx-association.properties').absolutePath
@@ -123,6 +131,12 @@ tasks.register('jpackageInstaller', Exec) {
             args '--win-menu'
             args '--win-shortcut'
             args '--win-dir-chooser'
+        }
+
+        if (!osName.contains('win') && !osName.contains('mac')) {
+            args '--linux-menu-group', 'Office'
+            args '--linux-app-category', 'Office'
+            args '--linux-shortcut'
         }
     }
 }
